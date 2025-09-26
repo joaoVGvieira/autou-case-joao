@@ -1,7 +1,7 @@
 import os
 import pdfplumber 
 import json
-import cohere  # 1. NOVO IMPORT
+import cohere 
 from flask import Flask, render_template, request
 from dotenv import load_dotenv
 
@@ -9,9 +9,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# --- INÍCIO DAS MUDANÇAS ---
-
-# 2. CONFIGURAR O CLIENTE DA COHERE
+#CONFIGURANDO O CLIENTE DA COHERE
 try:
     cohere_api_key = os.getenv("COHERE_API_KEY")
     if not cohere_api_key:
@@ -28,29 +26,45 @@ def analisar_email_com_ia(conteudo_email):
     if not co:
         return {"categoria": "Erro de Configuração", "sugestao_resposta": "A chave da API da Cohere não foi configurada corretamente."}
 
-    # --- PROMPT SIMPLIFICADO E MAIS RIGOROSO ---
-    prompt = f"""
+    # --- PROMPT PARA API
+prompt = f"""
     Sua única tarefa é analisar o e-mail abaixo e retornar um JSON. Não adicione nenhum texto extra.
 
     O formato de saída deve ser um JSON válido com apenas duas chaves: "categoria" e "sugestao_resposta".
-    - "categoria": Classifique como "Produtivo" APENAS se o e-mail exigir uma ação, resposta ou trabalho. Caso contrário, classifique como "Improdutivo". E-mails de agradecimento, felicitações ou avisos são Improdutivos.
-    - "sugestao_resposta": Sugira uma resposta curta e profissional. Para e-mails "Improdutivos", a resposta pode ser "Nenhuma ação necessária.".
+
+    - "categoria": Classifique como "Produtivo" APENAS se o e-mail exigir uma ação concreta, resposta ou trabalho. Caso contrário, classifique como "Improdutivo". E-mails de agradecimento, felicitações, avisos ou SPAM são Improdutivos.
+    
+    - "sugestao_resposta": Sugira uma resposta curta, profissional e contextual.
+      - Para e-mails **Produtivos**, a resposta deve confirmar o recebimento e indicar o próximo passo.
+      - Para e-mails **Improdutivos**, a resposta deve ser adaptada ao conteúdo:
+        - Se for um **agradecimento**, responda com gentileza (ex: "Ficamos felizes em ajudar!").
+        - Se for uma **felicitação** (aniversário, festas), retribua os votos (ex: "Agradecemos e desejamos o mesmo a você!").
+        - Se for um **aviso** ou comunicado, apenas confirme o recebimento (ex: "Obrigado pelo aviso.").
+        - Se for um simples "ok" ou "recebido", a resposta pode ser "Confirmado, obrigado.".
 
     E-mail para análise:
     ---
     {conteudo_email}
     ---
 
-    Exemplo de saída para um e-mail produtivo:
+    A seguir, exemplos de como você deve se comportar.
+
+    **Exemplo 1 (Produtivo - Pedido de Suporte):**
     {{
       "categoria": "Produtivo",
-      "sugestao_resposta": "Olá. Recebemos sua solicitação e já estamos verificando. Retornaremos em breve."
+      "sugestao_resposta": "Olá. Recebemos sua solicitação e nossa equipe já está analisando o problema. Retornaremos assim que tivermos uma atualização."
     }}
 
-    Exemplo de saída para um e-mail improdutivo:
+    **Exemplo 2 (Improdutivo - Agradecimento):**
     {{
       "categoria": "Improdutivo",
-      "sugestao_resposta": "Nenhuma ação necessária."
+      "sugestao_resposta": "De nada! Ficamos felizes em ajudar. Tenha um ótimo dia."
+    }}
+
+    **Exemplo 3 (Improdutivo - Aviso):**
+    {{
+      "categoria": "Improdutivo",
+      "sugestao_resposta": "Ciente. Agradecemos pelo comunicado."
     }}
     """
     
@@ -58,7 +72,7 @@ def analisar_email_com_ia(conteudo_email):
         response = co.chat(
             model='command-r-plus-08-2024',
             message=prompt,
-            temperature=0.2 # Diminuímos ainda mais a "criatividade" para forçar a IA a seguir o formato
+            temperature=0.3 
         )
         
         texto_resposta = response.text
@@ -77,14 +91,13 @@ def extrair_texto_pdf(file_stream):
     """Extrai texto de um arquivo PDF com alta precisão usando pdfplumber."""
     texto = ""
     try:
-        # pdfplumber.open() aceita o stream do arquivo diretamente
         with pdfplumber.open(file_stream) as pdf:
             # Itera sobre cada página do PDF
             for page in pdf.pages:
                 # Extrai o texto da página, mantendo o layout o máximo possível
                 texto_pagina = page.extract_text()
                 if texto_pagina:
-                    texto += texto_pagina + "\n" # Adiciona uma nova linha entre as páginas
+                    texto += texto_pagina + "\n" 
         return texto
     except Exception as e:
         print(f"Erro ao ler PDF com pdfplumber: {e}")
