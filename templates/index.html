@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoU - Classificador de E-mails</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Case Prático</h1>
+            <p>Inteligência Artificial para otimizar sua comunicação</p>
+        </header>
+
+        <main>
+            <form id="email-form" action="/" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <textarea name="email_text" id="email_text" rows="8" placeholder="cole o texto do e-mail aqui"></textarea>
+                </div>
+                
+                <div class="separator">
+                    <span>OU</span>
+                </div>
+
+                <div class="form-group">
+                    <div class="file-drop-area">
+                        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                        <span class="file-msg">Arraste e solte o arquivo (.txt ou .pdf) aqui ou <strong>clique para selecionar</strong>.</span>
+                        <input type="file" name="email_file" id="email_file" class="file-input" accept=".txt,.pdf">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span class="btn-text">Analisar E-mail</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+
+            {% if resultado %}
+            <div id="results-section" class="results">
+                <h2>Análise do E-mail</h2>
+                <div class="result-card">
+                    <div class="category-badge category-{{ resultado.categoria.lower() }}">
+                        {{ resultado.categoria }}
+                    </div>
+                    <h3>Sugestão de Resposta:</h3>
+                    <div class="response-container">
+                        <p id="suggested-response">{{ resultado.sugestao_resposta }}</p>
+                        <button type="button" id="copy-btn" class="copy-btn" title="Copiar resposta">
+                            <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-5zm0 16H8V7h11v14z"/></svg>
+                            <span class="copy-feedback">Copiado!</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+
+        <footer>
+            <p>Desenvolvido para o Case Prático da AutoU</p>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
