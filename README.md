@@ -2,7 +2,7 @@
 
 Este projeto é a solução para o case prático do processo seletivo da AutoU. Trata-se de uma aplicação web que utiliza a API da Cohere para classificar e-mails como "Produtivos" ou "Improdutivos" e sugerir respostas automáticas.
 
-**Link da Aplicação:** 
+**Link da Aplicação:** https://autou-case-joao-mol9.onrender.com/
 
 ## Funcionalidades
 
