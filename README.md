@@ -18,7 +18,7 @@ Este projeto é a solução para o case prático do processo seletivo da AutoU. 
 - **Inteligência Artificial:** API da Cohere
 - **Frontend:** HTML5, CSS3 e JavaScript
 - **Extração de PDF:** Biblioteca Pdfplumber
-- **Hospedagem:** Render (ou a plataforma que você usou)
+- **Hospedagem:** Render
 
 ## Como Rodar Localmente
 
