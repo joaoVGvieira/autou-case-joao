@@ -1,7 +1,7 @@
 import os
-import pdfplumber 
+import pdfplumber
 import json
-import cohere 
+import cohere
 from flask import Flask, render_template, request
 from dotenv import load_dotenv
 
@@ -9,7 +9,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-#CONFIGURANDO O CLIENTE DA COHERE
+# CONFIGURANDO O CLIENTE DA COHERE
 try:
     cohere_api_key = os.getenv("COHERE_API_KEY")
     if not cohere_api_key:
@@ -27,7 +27,7 @@ def analisar_email_com_ia(conteudo_email):
         return {"categoria": "Erro de Configuração", "sugestao_resposta": "A chave da API da Cohere não foi configurada corretamente."}
 
     # --- PROMPT PARA API
-prompt = f"""
+    prompt = f"""
     Sua única tarefa é analisar o e-mail abaixo e retornar um JSON. Não adicione nenhum texto extra.
 
     O formato de saída deve ser um JSON válido com apenas duas chaves: "categoria" e "sugestao_resposta".
@@ -67,12 +67,11 @@ prompt = f"""
       "sugestao_resposta": "Ciente. Agradecemos pelo comunicado."
     }}
     """
-    
     try:
         response = co.chat(
             model='command-r-plus-08-2024',
             message=prompt,
-            temperature=0.3 
+            temperature=0.3
         )
         
         texto_resposta = response.text
@@ -84,7 +83,6 @@ prompt = f"""
             "categoria": "Erro de API",
             "sugestao_resposta": "Não foi possível analisar o e-mail. Verifique sua chave da API da Cohere ou o status do serviço."
         }
-# --- FIM DAS MUDANÇAS ---
 
 
 def extrair_texto_pdf(file_stream):
@@ -97,7 +95,7 @@ def extrair_texto_pdf(file_stream):
                 # Extrai o texto da página, mantendo o layout o máximo possível
                 texto_pagina = page.extract_text()
                 if texto_pagina:
-                    texto += texto_pagina + "\n" 
+                    texto += texto_pagina + "\n"
         return texto
     except Exception as e:
         print(f"Erro ao ler PDF com pdfplumber: {e}")
@@ -136,10 +134,10 @@ def index():
             else:
                 resultado = resposta_ia
         else:
-             resultado = {
-                    "categoria": "Atenção",
-                    "sugestao_resposta": "Por favor, insira o texto de um e-mail ou envie um arquivo .txt ou .pdf."
-                }
+            resultado = {
+                "categoria": "Atenção",
+                "sugestao_resposta": "Por favor, insira o texto de um e-mail ou envie um arquivo .txt ou .pdf."
+            }
     
     return render_template('index.html', resultado=resultado)
 
