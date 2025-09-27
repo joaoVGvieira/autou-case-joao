@@ -35,11 +35,11 @@ def analisar_email_com_ia(conteudo_email):
     - "categoria": Classifique como "Produtivo" APENAS se o e-mail exigir uma ação concreta, resposta ou trabalho. Caso contrário, classifique como "Improdutivo". E-mails de agradecimento, felicitações, avisos ou SPAM são Improdutivos.
     
     - "sugestao_resposta": Sugira uma resposta curta, profissional e contextual.
-      - Para e-mails **Produtivos**, a resposta deve confirmar o recebimento e indicar o próximo passo.
-      - Para e-mails **Improdutivos**, a resposta deve ser adaptada ao conteúdo:
-        - Se for um **agradecimento**, responda com gentileza (ex: "Ficamos felizes em ajudar!").
-        - Se for uma **felicitação** (aniversário, festas), retribua os votos (ex: "Agradecemos e desejamos o mesmo a você!").
-        - Se for um **aviso** ou comunicado, apenas confirme o recebimento (ex: "Obrigado pelo aviso.").
+      - Para e-mails Produtivos, a resposta deve confirmar o recebimento e indicar o próximo passo.
+      - Para e-mails Improdutivos, a resposta deve ser adaptada ao conteúdo:
+        - Se for um agradecimento, responda com gentileza (ex: "Ficamos felizes em ajudar!").
+        - Se for uma felicitação (aniversário, festas), retribua os votos (ex: "Agradecemos e desejamos o mesmo a você!").
+        - Se for um aviso ou comunicado, apenas confirme o recebimento (ex: "Obrigado pelo aviso.").
         - Se for um simples "ok" ou "recebido", a resposta pode ser "Confirmado, obrigado.".
 
     E-mail para análise:
